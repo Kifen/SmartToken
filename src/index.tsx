@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { Web3ReactProvider } from '@web3-react/core'
 import { ethers } from 'ethers'
 import './index.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
 import App from './App'
 
 function getLibrary(provider: ethers.providers.ExternalProvider) {

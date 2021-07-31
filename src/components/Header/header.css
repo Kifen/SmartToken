@@ -1,0 +1,26 @@
+header {
+  display: flex;
+  padding: 2em;
+}
+
+.info-box {
+  margin-left: auto;
+}
+
+#network {
+  background-color: #2c292a;
+  color: #f3b71d;
+  padding: 0.7em;
+  border-radius: 10px;
+  margin-right: 0.7em;
+}
+
+#address {
+  background-color: #1e2f48;
+  color: #6da7fe;
+  padding: 0.7em;
+  border-radius: 10px;
+  /* display: inline-block;
+  width: 7em; */
+  text-overflow: ellipsis;
+}
