@@ -42,7 +42,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
      require(reserveToken.allowance(msg.sender, address(this)) >= buyPrice, "SmartToken: transfer amount exceeds allowance");
 
      reserveToken.transferFrom(msg.sender, address(this), buyPrice);
-     mint(msg.sender, _amount);
+     _mint(msg.sender, _amount);
      emit Buy(msg.sender, _amount, buyPrice);
    }
 
