@@ -1,6 +1,7 @@
 import React from 'react'
 import './main.css'
 import { Form, InputGroup, Button } from 'react-bootstrap'
+import PendingTxModal from './PendingTxModal'
 
 const Main = () => {
   return (
@@ -39,6 +40,7 @@ const Main = () => {
           </div>
         </div>
       </div>
+      <PendingTxModal />
     </div>
   )
 }
