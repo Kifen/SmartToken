@@ -12,7 +12,7 @@ contract BondingCurve{
   * @param  _tokenSupply     token total supply
   * @param _purchaseAmount   amount of token to purchse 
   */
-  function calculatePurchaseReturn(uint256 _tokenSupply, uint256 _purchaseAmount) internal view returns (uint256) {
+  function calculatePurchaseReturn(uint256 _tokenSupply, uint256 _purchaseAmount) public view returns (uint256) {
     uint256 upperBound =  exponent(_tokenSupply + _purchaseAmount)/2;
     uint256 lowerBoundBound =  exponent(_tokenSupply)/2;
     return upperBound - lowerBoundBound;
@@ -28,7 +28,7 @@ contract BondingCurve{
   * @param  _tokenSupply     token total supply
   * @param _sellAmount       amount of token beign sold 
   */
-  function calculateSalesReturn(uint256 _tokenSupply, uint256 _sellAmount) internal view returns (uint256) {
+  function calculateSalesReturn(uint256 _tokenSupply, uint256 _sellAmount) public view returns (uint256) {
      uint256 upperBound =  exponent(_tokenSupply)/2;
     uint256 lowerBoundBound =  exponent(_tokenSupply - _sellAmount)/2;
     return upperBound - lowerBoundBound;

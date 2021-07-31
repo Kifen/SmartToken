@@ -4,8 +4,9 @@ pragma solidity ^0.8.0;
 import "./BondingCurve.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
- contract SmartToken is BondingCurve, ERC20Capped {
+ contract SmartToken is BondingCurve, ERC20Capped, Ownable {
 
     IERC20 public immutable reserveToken; 
 
@@ -21,7 +22,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
   * @dev returns the price to purchase `_amount` tokens
   * @param    _amount   number of tokens
   */
-   function getBuyPrice(uint256 _amount) public returns (uint256) {
+   function getBuyPrice(uint256 _amount) public view returns (uint256) {
      uint256 tokenSupply = totalSupply();
      return calculatePurchaseReturn(tokenSupply, _amount);
    }
@@ -30,8 +31,9 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
   * @dev returns the price to sell `_amount` tokens
   * @param    _amount   number of tokens
   */
-   function getSellPrice(uint256 _amount) public returns (uint256) {
+   function getSellPrice(uint256 _amount) public view returns (uint256) {
      uint256 tokenSupply = totalSupply();
+     require(tokenSupply >= _amount, "SmartToken: ");
      return calculateSalesReturn(tokenSupply, _amount);
    }
 
@@ -40,7 +42,7 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
      require(reserveToken.allowance(msg.sender, address(this)) >= buyPrice, "SmartToken: transfer amount exceeds allowance");
 
      reserveToken.transferFrom(msg.sender, address(this), buyPrice);
-     _mint(msg.sender, _amount);
+     mint(msg.sender, _amount);
      emit Buy(msg.sender, _amount, buyPrice);
    }
 
@@ -51,5 +53,9 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
       reserveToken.transfer(msg.sender, sellPrice);
 
       emit Sell(msg.sender, _amount, sellPrice);
+   }
+
+   function mint(address _account, uint256 _amount) public onlyOwner {
+     _mint(_account, _amount);
    }
  }

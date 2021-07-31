@@ -1,9 +1,9 @@
 const { expect } = require("chai");
+const { getSellPrice, getBuyPrice } = require("./testutils.js");
 
 describe("BondingCurve", () => {
   let bondingCurve;
-  let tokenSupply;
-
+  let tokenSupply
   beforeEach( async () => {
     const BondingCurve = await ethers.getContractFactory("BondingCurve");
     bondingCurve = await BondingCurve.deploy();
@@ -20,15 +20,15 @@ describe("BondingCurve", () => {
     tokenSupply = 0
     const purchaseAmount = 10;
     const amount = await bondingCurve.calculatePurchaseReturn(tokenSupply, purchaseAmount)
-    const realAmount = ((1/2)*purchaseAmount**2) - ((1/2)*tokenSupply**2);
+    const realAmount = getBuyPrice(tokenSupply, purchaseAmount);
     expect(amount).to.equal(realAmount)
   })
 
   it("should get the correct amount to sell tokens when token supply is 10", async () => {
     tokenSupply = 10
-    const saleAmount = 10;
-    const amount = await bondingCurve.calculateSalesReturn(tokenSupply, saleAmount)
-    const realAmount = ((1/2)*tokenSupply**2) - ((1/2)*(tokenSupply - saleAmount)**2);
+    const sellAmount = 10;
+    const amount = await bondingCurve.calculateSalesReturn(tokenSupply, sellAmount)
+    const realAmount = getSellPrice(tokenSupply, sellAmount);
     expect(amount).to.equal(realAmount)
   })
 })
