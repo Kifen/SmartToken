@@ -32,11 +32,10 @@ export const getNetwork = (chainId?: number): string => {
 
 export const SmartTokenContract = (user: User): Contract => {
   const network: any = getNetwork(user.chainId)
-  console.log('VIEW: ', SMART_TOKEN_ADDRESSES[network])
   const contract = new Contract(
     SMART_TOKEN_ADDRESSES[network],
     SmartTokenABI.abi,
-    user.library?.getSigner().connectUnchecked(),
+    user.library?.getSigner(),
   )
 
   return contract
@@ -55,7 +54,7 @@ export const daiContract = (user: User): Contract => {
 
 export const getTOKBalance = async (user: User): Promise<number> => {
   const contract = SmartTokenContract(user)
-  const balance = contract.balanceOf(user.account)
+  const balance = await contract.balanceOf(user.account)
   return balance
 }
 
@@ -63,6 +62,18 @@ export const getDAIBalance = async (user: User): Promise<number> => {
   const contract = daiContract(user)
   const balance = await contract.balanceOf(user.account)
   return balance
+}
+
+export const getBuyPrice = async (
+  user: User,
+  amount: number,
+): Promise<number> => {
+  console.log('VIEW: ', amount, typeof amount, user)
+  const contract = SmartTokenContract(user)
+  console.log('BEFORE')
+  const buyPrice = await contract.getBuyPrice(amount)
+  console.log('AFTER: ', buyPrice.toString(), typeof buyPrice)
+  return buyPrice
 }
 
 // export const userCanBuy = async (user: User, amount: number) => {

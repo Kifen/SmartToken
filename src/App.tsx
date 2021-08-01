@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
-import { useWeb3React } from '@web3-react/core'
+import { Web3ReactProvider, useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
+import { useEagerConnect, useInactiveListener } from './services/hooks'
 import { MetaMask } from './connectors'
 import Header from './components/Header/Header'
 import Main from './components/Main/Main'
