@@ -2,14 +2,28 @@ import React, { useState } from 'react'
 import './main.css'
 import { Form, InputGroup, Button } from 'react-bootstrap'
 import PendingTxModal from './PendingTxModal'
+import Message from '../Message/Message'
 
 const Main = () => {
   const [value, setValue] = useState<any | null>(null)
   const [buy, setBuy] = useState<boolean>(true)
   const [sell, setSell] = useState<boolean>(false)
+  const [message, setMessage] = useState<string>('')
   return (
     <div className="main-page">
       <div className="main">
+        {message && (
+          <Message variant="danger">
+            <span className="text-center">{message}</span>
+            <i
+              style={{ float: 'right', cursor: 'pointer', marginTop: '5px' }}
+              className="far fa-times-circle"
+              onClick={() => setMessage('')}
+              onKeyDown={() => setMessage('')}
+              aria-hidden="true"
+            />
+          </Message>
+        )}
         <div className="access-box">
           <div className="buy-sell mb-2">
             <Button
