@@ -114,3 +114,21 @@
 .bal-name {
   margin-right: auto;
 }
+
+.spin {
+  width: 100px;
+  height: 100px;
+}
+
+.view-tx {
+  text-decoration: none;
+  background-color: green;
+  color: #fff;
+  padding: .8em;
+  border-radius: 8px;
+}
+
+.view-tx:hover {
+  color: #fff;
+  background-color: rgb(6, 99, 6);
+}

@@ -1,29 +1,35 @@
 import React from 'react'
 import { Button, Modal, Spinner } from 'react-bootstrap'
 
-const show = true
-
 const PendingTxModal = () => {
   return (
     <div>
-      <Modal.Dialog>
-        <Modal.Header closeButton>
-          <Modal.Title>Transaction Pending</Modal.Title>
+      <Modal>
+        <Modal.Header>
+          <Modal.Title style={{ margin: 'auto' }}>
+            Transaction Pending
+          </Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>
+        <Modal.Body style={{ margin: 'auto' }}>
           <Spinner
             variant="success"
-            animation="grow"
-            className="mx-auto"
-            size="sm"
+            animation="border"
+            className="mx-auto spin"
           />
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="primary">View on Etherscan</Button>
+          <a
+            href="/#"
+            target="_blank"
+            className="view-tx"
+            style={{ margin: 'auto' }}
+          >
+            View on Etherscan
+          </a>
         </Modal.Footer>
-      </Modal.Dialog>
+      </Modal>
     </div>
   )
 }

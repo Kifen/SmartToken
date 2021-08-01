@@ -1,39 +1,35 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useWeb3React } from '@web3-react/core'
+import { Web3Provider } from '@ethersproject/providers'
 import { MetaMask } from './connectors'
 import Header from './components/Header/Header'
 import Main from './components/Main/Main'
+import { getNetwork } from './services/utils'
 
 function App() {
-  const { active, activate, library, error } = useWeb3React()
-  const [blockNumber, setBlockNumber] = useState(null)
-
+  const {
+    active,
+    activate,
+    library,
+    account,
+    error,
+    chainId,
+  } = useWeb3React<Web3Provider>()
   useEffect(() => {
     if (!active) {
       activate(MetaMask)
     }
-
-    if (active) {
-      library.getBlockNumber().then(setBlockNumber)
-    }
-  }, [active, library, activate])
-
-  let content = null
-
-  if (error) {
-    content = 'There was an error'
-  } else if (active) {
-    content = blockNumber
-      ? `Block number: ${blockNumber}`
-      : 'Fetching block number'
-  } else {
-    content = 'Loading...'
-  }
+  }, [active, library, activate, account, chainId])
 
   return (
     <div className="app">
-      <Header />
-      <Main />
+      <>
+        <Header
+          network={chainId ? getNetwork(chainId) : ''}
+          account={account}
+        />
+        <Main />
+      </>
     </div>
   )
 }

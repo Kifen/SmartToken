@@ -1,28 +1,74 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useWeb3React } from '@web3-react/core'
+import { Web3Provider } from '@ethersproject/providers'
 import './main.css'
 import { Form, InputGroup, Button } from 'react-bootstrap'
 import PendingTxModal from './PendingTxModal'
 import Message from '../Message/Message'
 import ApproveModal from '../ApproveModal/ApproveModal'
+import { User } from '../../services/types'
+import { getTOKBalance, getDAIBalance } from '../../services/utils'
+
+interface MainProps {
+  account: string
+  chainId: number
+  library: any
+}
+
+const getUser = (chainId?: number, account?: any, library?: any): User => {
+  const user = {
+    account,
+    chainId,
+    library,
+  }
+  return user
+}
 
 const Main = () => {
+  const {
+    active,
+    activate,
+    library,
+    account,
+    error,
+    chainId,
+  } = useWeb3React<Web3Provider>()
+
   const [value, setValue] = useState<any | null>(null)
   const [buy, setBuy] = useState<boolean>(true)
   const [sell, setSell] = useState<boolean>(false)
   const [message, setMessage] = useState<string>('')
+  const [daiBalance, setDaiBalance] = useState<string>('')
+  const [tokBalance, setTokBalance] = useState<string>('')
   const [show, setShow] = useState<boolean>(false)
+
+  useEffect(() => {
+    async function getBalances() {
+      const dai = await getDAIBalance(getUser(chainId, account, library))
+      const tok = await getTOKBalance(getUser(chainId, account, library))
+
+      setDaiBalance((dai / 10 ** 18).toString())
+      setTokBalance((tok / 10 ** 18).toString())
+    }
+
+    if (active) {
+      getBalances()
+    }
+  }, [active, library, account, chainId])
+
   return (
     <div className="main-page">
       <ApproveModal show={show} onHide={() => setShow(false)} />
+      <PendingTxModal />
       <div className="main">
         <div className="balance-div mb-4">
           <div className="bln">
             <span className="bal-name">DAI Balance</span>
-            <span>x DAI</span>
+            <span>{`${daiBalance} DAI`}</span>
           </div>
           <div className="bln">
             <span className="bal-name">TOK Balance</span>
-            <span>x TOK</span>
+            <span>{`${tokBalance} TOK`}</span>
           </div>
         </div>
         {message && (
@@ -78,7 +124,9 @@ const Main = () => {
               </InputGroup>
               {value && (
                 <div className="info-span">
-                  <span className="text-muted">{value} TOK = x DAI</span>
+                  <span className="text-muted">
+                    {value} TOK = {value * 22} DAI
+                  </span>
                 </div>
               )}
               <div className="button">
