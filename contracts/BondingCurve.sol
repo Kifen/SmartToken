@@ -18,15 +18,14 @@ contract BondingCurve{
     return upperBound - lowerBoundBound;
   }
 
-
-  /* 
+  /*
   * @dev given a token supply and a sell amount
   * calculates the expected return in the reserve token
   *
   * Formula: (1/2 * tokenSupply^2) -  (1/2 * (tokenSupply - sellAmount)^2)
   *
   * @param  _tokenSupply     token total supply
-  * @param _sellAmount       amount of token beign sold 
+  * @param _sellAmount       amount of token beign sold
   */
   function calculateSalesReturn(uint256 _tokenSupply, uint256 _sellAmount) public view returns (uint256) {
      uint256 upperBound =  exponent(_tokenSupply)/2;

@@ -1,18 +1,22 @@
 .main-page {
   flex-grow: 2;
-  /* border: 1px solid #aaa8a8; */
+  padding-top: 7em;
 }
 
 .main {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  flex-grow: 2;
 }
 
 .access-box {
   border: 1px solid #aaa8a8;
   padding: 2em;
-  border-radius: 20px;
+  border-radius: 18px;
+  max-width: 35em;
+  min-width: 20rem;
+  width: 80%;
 }
 
 .buy-sell {
@@ -29,6 +33,14 @@
 
 .sell {
   border-radius: 8px;
+}
+
+.sell:hover {
+  border: 1px solid #000;
+}
+
+.buy:hover {
+  border: 1px solid #000;
 }
 
 .top {
@@ -53,4 +65,16 @@
 .submit-btn {
   padding-left: 2em;
   padding-right: 2em;
+}
+
+.info-span {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 2;
+  justify-content: center;
+  margin: .5em auto;
+}
+
+.borderr {
+  border: 1px solid #000;
 }

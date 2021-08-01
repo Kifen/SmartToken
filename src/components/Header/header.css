@@ -5,6 +5,9 @@ header {
 
 .info-box {
   margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 #network {
@@ -13,6 +16,7 @@ header {
   padding: 0.7em;
   border-radius: 10px;
   margin-right: 0.7em;
+  display: inline-block;
 }
 
 #address {
@@ -20,7 +24,16 @@ header {
   color: #6da7fe;
   padding: 0.7em;
   border-radius: 10px;
-  /* display: inline-block;
-  width: 7em; */
+  display: inline-block;
+  /* width: 7em; */
   text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 7em;
+}
+
+@media only screen and (max-width: 600px) {
+  .info-box {
+    
+  }
 }
