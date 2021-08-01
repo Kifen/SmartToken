@@ -3,14 +3,17 @@ import './main.css'
 import { Form, InputGroup, Button } from 'react-bootstrap'
 import PendingTxModal from './PendingTxModal'
 import Message from '../Message/Message'
+import ApproveModal from '../ApproveModal/ApproveModal'
 
 const Main = () => {
   const [value, setValue] = useState<any | null>(null)
   const [buy, setBuy] = useState<boolean>(true)
   const [sell, setSell] = useState<boolean>(false)
   const [message, setMessage] = useState<string>('')
+  const [show, setShow] = useState<boolean>(false)
   return (
     <div className="main-page">
+      <ApproveModal show={show} onHide={() => setShow(false)} />
       <div className="main">
         {message && (
           <Message variant="danger">
@@ -77,6 +80,17 @@ const Main = () => {
             </Form>
           </div>
         </div>
+        {buy && (
+          <div className="approve-text">
+            <span
+              onClick={() => setShow(true)}
+              onKeyDown={() => setShow(true)}
+              aria-hidden="true"
+            >
+              <b>Set Approval</b>
+            </span>
+          </div>
+        )}
       </div>
     </div>
   )

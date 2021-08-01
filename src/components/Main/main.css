@@ -6,10 +6,6 @@
 }
 
 .main {
-  /* display: flex;
-  flex-direction: row;
-  justify-content: center; */
-  /* border: 1px solid #aaa8a8; */
   padding: 2em;
   border-radius: 18px;
   max-width: 50em;
@@ -86,4 +82,19 @@
 
 .borderr {
   border: 1px solid #000;
+}
+
+.approve-text {
+  display: flex;
+  margin-top: 1em;
+}
+
+.approve-text > span {
+  cursor: pointer;
+  background-color: green;
+  color: #fff;
+  font-size: .8em;
+  margin: auto;
+  padding: .3em .5em;
+  border-radius: 8px;
 }
