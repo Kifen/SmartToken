@@ -15,6 +15,16 @@ const Main = () => {
     <div className="main-page">
       <ApproveModal show={show} onHide={() => setShow(false)} />
       <div className="main">
+        <div className="balance-div mb-4">
+          <div className="bln">
+            <span className="bal-name">DAI Balance</span>
+            <span>x DAI</span>
+          </div>
+          <div className="bln">
+            <span className="bal-name">TOK Balance</span>
+            <span>x TOK</span>
+          </div>
+        </div>
         {message && (
           <Message variant="danger">
             <span className="text-center">{message}</span>
@@ -52,7 +62,6 @@ const Main = () => {
           </div>
           <div className="top">
             <span>input</span>
-            <span className="text-muted bal">Balance:</span>
           </div>
           <div className="form">
             <Form>

@@ -8,8 +8,8 @@
 .main {
   padding: 2em;
   border-radius: 18px;
-  max-width: 50em;
-  min-width: 40rem;
+  /* max-width: 50em;
+  min-width: 40rem; */
   width: 80%;
   margin: auto;
 }
@@ -97,4 +97,20 @@
   margin: auto;
   padding: .3em .5em;
   border-radius: 8px;
+}
+
+.balance-div {
+  /* margin: auto; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bln {
+  display: flex;
+  width: 40%;
+}
+
+.bal-name {
+  margin-right: auto;
 }
