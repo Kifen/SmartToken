@@ -27,14 +27,7 @@ const getUser = (chainId?: number, account?: any, library?: any): User => {
 }
 
 const Main = () => {
-  const {
-    active,
-    activate,
-    library,
-    account,
-    error,
-    chainId,
-  } = useWeb3React<Web3Provider>()
+  const { active, activate, library, account, error, chainId } = useWeb3React()
 
   const [value, setValue] = useState<any>(null)
   const [rAccount, setAccount] = useState<any>(null)
