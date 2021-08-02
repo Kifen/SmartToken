@@ -12,6 +12,7 @@ import {
   getTOKBalance,
   getDAIBalance,
   initateBuy,
+  initiateSell,
   approve,
 } from '../../services/utils'
 
@@ -80,6 +81,18 @@ const Main = () => {
         buyAmount,
         setMessage,
       )
+      if (hash) {
+        setPendingHash(hash)
+        setTxShow(true)
+      }
+    } else {
+      const sellAmount = BigNumber.from(value)
+      const hash = await initiateSell(
+        getUser(chainId, account, library),
+        sellAmount,
+        setMessage,
+      )
+
       if (hash) {
         setPendingHash(hash)
         setTxShow(true)

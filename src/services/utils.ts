@@ -91,15 +91,20 @@ export const userCanBuy = async (
     SMART_TOKEN_ADDRESSES[network],
   )
   const daiBal = await getDAIBalance(user)
+  const realDailBal = parseInt(daiBal.div(decimals).toString(), 10)
+
   const buyPrice = await getBuyPrice(user, amount)
+  const realBuyPrice = parseInt(buyPrice.toString(), 10)
+
   console.log(
-    'PR: ',
-    allowance.div(decimals).toString(),
+    'VIEW: ',
     daiBal.div(decimals).toString(),
-    BigNumber.from(buyPrice).toString(),
+    buyPrice.toString(),
+    parseInt(daiBal.div(decimals).toString(), 10) <
+      parseInt(buyPrice.toString(), 10),
   )
-  console.log('TO:', (await contract.totalSupply()).toString())
-  if (daiBal.div(decimals) < BigNumber.from(buyPrice)) {
+
+  if (realDailBal < realBuyPrice) {
     setMessage(`Your DAI balance is insufficient for this order.`)
     return false
   }
@@ -115,7 +120,7 @@ export const userCanBuy = async (
 export const buy = async (user: User, amount: BigNumber): Promise<string> => {
   const contract = SmartTokenContract(user)
   const buyPrice = await contract.getBuyPrice(amount)
-
+  console.log('AMOUNT: ', amount)
   const tx = await contract.buy(amount, options)
   console.log(tx)
   return tx.hash
@@ -148,4 +153,23 @@ export const approve = async (user: User, amount: BigNumber) => {
   console.log('TX: ', tx)
   return tx.hash
 }
-// export const userCanSell = async (user: User, amount: number) => {}
+
+export const initiateSell = async (
+  user: User,
+  amount: BigNumber,
+  setMessage: (arg0: string) => void,
+) => {
+  const contract = SmartTokenContract(user)
+  let balance = await contract.balanceOf(user.account)
+  balance = parseInt(balance.div(decimals).toString(), 10)
+
+  const sellAmount = amount.toString()
+
+  if (balance < sellAmount) {
+    setMessage(`Your TOK balance is insufficient for this order.`)
+    return false
+  }
+
+  const tx = await contract.sell(amount)
+  return tx.hash
+}
