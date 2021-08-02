@@ -1,5 +1,5 @@
 export const SMART_TOKEN_ADDRESSES: { [key: string]: string } = {
-  Rinkeby: '0x98f5319f4ed0A02d94E5De7da547668e857f5F98',
+  Rinkeby: '0xCcDB8383FD42Fb4b1aE99730B5C55BE49A4D2731',
 }
 
 export const DAI_ADDRESSES: { [key: string]: string } = {

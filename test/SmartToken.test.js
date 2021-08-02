@@ -19,7 +19,6 @@ describe('SmartToken', () => {
 
   const buy = async (buyer, amount) => {
     const buyPrice = await smartToken.getBuyPrice(amount)
-
     // approve SmartToken to transfer from bob's account
     await mockReserveToken
       .connect(buyer)
@@ -46,12 +45,7 @@ describe('SmartToken', () => {
 
     // deploy the SmartToken
     const SmartToken = await ethers.getContractFactory('SmartToken')
-    smartToken = await SmartToken.deploy(
-      name,
-      symbol,
-      maxSupply,
-      mockReserveToken.address,
-    )
+    smartToken = await SmartToken.deploy(name, symbol, mockReserveToken.address)
     await smartToken.deployed()
   })
 
@@ -59,7 +53,6 @@ describe('SmartToken', () => {
     const totalSupply = await smartToken.totalSupply()
     const amount = 1
     const buyPrice = await smartToken.getBuyPrice(amount)
-    console.log(buyPrice.toString(), totalSupply.toString())
     const expectedBuyPrice = getBuyPrice(parseInt(totalSupply), amount)
 
     expect(buyPrice).to.equal(expectedBuyPrice)
@@ -67,13 +60,14 @@ describe('SmartToken', () => {
 
   it('should get correct sell price', async () => {
     // Mint new tokens
-    const tokens = ethers.BigNumber.from(25)
-    await smartToken.mint(bob.address, tokens)
+    await smartToken.mint(bob.address, sellAmount)
 
-    const totalSupply = tokens
+    let totalSupply = (await smartToken.totalSupply()).div(decimals)
+    totalSupply = parseInt(totalSupply.toString())
     const sellPrice = await smartToken.getSellPrice(sellAmount)
+
     const expectedSellPrice = getSellPrice(
-      parseInt(totalSupply),
+      totalSupply,
       parseInt(sellAmount.div(decimals).toString()),
     )
     expect(sellPrice).to.equal(expectedSellPrice)
@@ -84,7 +78,7 @@ describe('SmartToken', () => {
     await mockReserveToken.mint(buyer.address, mintMount)
     const buyPrice = await buy(buyer, buyAmount)
 
-    expect(await smartToken.totalSupply()).to.equal(25)
+    expect(await smartToken.totalSupply()).to.equal(buyAmount)
     expect(await mockReserveToken.balanceOf(buyer.address)).to.equal(
       mintMount.sub(buyPrice.mul(decimals)),
     )
@@ -96,7 +90,6 @@ describe('SmartToken', () => {
   it('should sell TOK for reserve token', async () => {
     const user1 = bob
     const user2 = tunji
-
     await mockReserveToken.mint(user1.address, mintMount)
     await mockReserveToken.mint(user2.address, mintMount)
 
@@ -112,19 +105,16 @@ describe('SmartToken', () => {
       smartToken.address,
     )
     expect(mockReserveTokenBalance).to.equal(buyPrice1.add(buyPrice2))
-    expect(totalSupply).to.equal(buyAmount.div(decimals) * 2)
+    expect(totalSupply).to.equal(buyAmount.mul(ethers.BigNumber.from(2)))
 
+    // sell smart tokens
     let sellPrice = await sell(user1, sellAmount)
     sellPrice = sellPrice.mul(decimals)
+    expect(await smartToken.totalSupply()).to.equal(totalSupply.sub(sellAmount))
 
-    expect(await smartToken.totalSupply()).to.equal(
-      totalSupply - sellAmount.div(decimals),
-    )
     expect(await mockReserveToken.balanceOf(smartToken.address)).to.equal(
       mockReserveTokenBalance.sub(sellPrice),
     )
-    expect(await smartToken.totalSupply()).to.equal(
-      totalSupply - sellAmount.div(decimals),
-    )
+    expect(await smartToken.totalSupply()).to.equal(totalSupply.sub(sellAmount))
   })
 })

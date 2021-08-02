@@ -2,11 +2,11 @@
 pragma solidity ^0.8.0;
 
 import "./BondingCurve.sol";
-import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Capped.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
- contract SmartToken is BondingCurve, ERC20Capped, Ownable {
+ contract SmartToken is BondingCurve, ERC20, Ownable {
 
     IERC20 public immutable reserveToken; 
 
@@ -14,7 +14,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
     event Sell(address indexed seller, uint256 indexed amount, uint256 received);
     event Buy(address indexed buyer, uint256 indexed amount, uint256 paid);
 
-   constructor(string memory _name, string memory _symbol, uint256 _maxSupply, IERC20 _token) public ERC20(_name, _symbol)  ERC20Capped(_maxSupply) {
+   constructor(string memory _name, string memory _symbol, IERC20 _token) public ERC20(_name, _symbol)  {
      reserveToken = _token;
    }
 
@@ -24,7 +24,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
   */
    function getBuyPrice(uint256 _amount) public view returns (uint256) {
      _amount = _amount/1e18;
-     uint256 tokenSupply = totalSupply();
+     uint256 tokenSupply = totalSupply()/1e18;
      return calculatePurchaseReturn(tokenSupply, _amount);
    }
 
@@ -34,8 +34,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
   */
    function getSellPrice(uint256 _amount) public view returns (uint256) {
      _amount = _amount/1e18;
-     uint256 tokenSupply = totalSupply();
-     require(tokenSupply >= _amount, "SmartToken: ");
+     uint256 tokenSupply = totalSupply()/1e18;
      return calculateSalesReturn(tokenSupply, _amount);
    }
 
@@ -46,7 +45,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
      require(reserveToken.allowance(msg.sender, address(this)) >= buyPrice, "SmartToken: transfer amount exceeds allowance");
 
      reserveToken.transferFrom(msg.sender, address(this), buyPrice);
-     _amount = _amount/1e18;
      _mint(msg.sender, _amount);
      emit Buy(msg.sender, _amount, buyPrice);
    }
@@ -56,7 +54,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
       uint256 sellPrice = getSellPrice(_amount);
       sellPrice = sellPrice * 1e18;
 
-       _amount = _amount/1e18;
       _burn(msg.sender, _amount);
       reserveToken.transfer(msg.sender, sellPrice);
 

@@ -119,10 +119,7 @@ export const userCanBuy = async (
 
 export const buy = async (user: User, amount: BigNumber): Promise<string> => {
   const contract = SmartTokenContract(user)
-  const buyPrice = await contract.getBuyPrice(amount)
-  console.log('AMOUNT: ', amount)
   const tx = await contract.buy(amount, options)
-  console.log(tx)
   return tx.hash
 }
 
@@ -132,10 +129,11 @@ export const initateBuy = async (
   setMessage: (arg0: string) => void,
 ) => {
   let hash
-  const canBuy = await userCanBuy(user, amount, setMessage)
+  const bnAmount = BigNumber.from(amount).mul(decimals)
+  const canBuy = await userCanBuy(user, bnAmount, setMessage)
   if (canBuy) {
-    const price = await getBuyPrice(user, amount)
-    hash = await buy(user, amount)
+    // const price = await getBuyPrice(user, bnAmount)
+    hash = await buy(user, bnAmount)
   }
 
   return hash
