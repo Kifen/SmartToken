@@ -71,19 +71,20 @@ export const getDAIBalance = async (user: User): Promise<BigNumber> => {
 export const getBuyPrice = async (
   user: User,
   amount: BigNumber,
+  supply: BigNumber,
 ): Promise<number> => {
   const contract = SmartTokenContract(user)
-  const buyPrice = await contract.getBuyPrice(amount)
+  const buyPrice = await contract.getBuyPrice(amount, supply)
   return buyPrice
 }
 
 export const userCanBuy = async (
   user: User,
   amount: BigNumber,
+  totalSupply: BigNumber,
   setMessage: (arg0: string) => void,
 ): Promise<boolean> => {
   const dai = daiContract(user)
-
   const network: any = getNetwork(user.chainId)
   const allowance = await dai.allowance(
     user.account,
@@ -92,7 +93,7 @@ export const userCanBuy = async (
   const daiBal = await getDAIBalance(user)
   const realDailBal = parseInt(daiBal.div(decimals).toString(), 10)
 
-  const buyPrice = await getBuyPrice(user, amount)
+  const buyPrice = await getBuyPrice(user, amount, totalSupply)
   const realBuyPrice = parseInt(buyPrice.toString(), 10)
 
   if (realDailBal < realBuyPrice) {
@@ -120,8 +121,16 @@ export const initateBuy = async (
   setMessage: (arg0: string) => void,
 ) => {
   let hash
+  const contract = SmartTokenContract(user)
+  const totalSupply = await contract.totalSupply()
   const bnAmount = BigNumber.from(amount).mul(decimals)
-  const canBuy = await userCanBuy(user, bnAmount, setMessage)
+  const canBuy = await userCanBuy(
+    user,
+    amount,
+    totalSupply.div(decimals),
+    setMessage,
+  )
+
   if (canBuy) {
     hash = await buy(user, bnAmount)
   }
