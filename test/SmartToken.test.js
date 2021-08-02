@@ -20,8 +20,8 @@ describe('SmartToken', () => {
   const buy = async (buyer, amount) => {
     let totalSupply = (await smartToken.totalSupply()).div(decimals)
     const buyPrice = await smartToken.calculatePurchaseReturn(
-      amount.div(decimals),
       totalSupply,
+      amount.div(decimals),
     )
     // approve SmartToken to transfer from bob's account
     await mockReserveToken
@@ -81,6 +81,14 @@ describe('SmartToken', () => {
       )
       expect(await mockReserveToken.balanceOf(smartToken.address)).to.equal(
         buyPrice.mul(decimals),
+      )
+    })
+
+    it('should fail to buy if allowance is insufficient', async () => {
+      const buyer = bob
+      await mockReserveToken.mint(buyer.address, mintMount)
+      await expect(smartToken.connect(buyer).buy(buyAmount)).to.be.revertedWith(
+        'SmartToken: transfer amount exceeds allowance',
       )
     })
   })

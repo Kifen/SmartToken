@@ -20,7 +20,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
    function buy(uint256 _amount) external {
      uint256 tokenSupply = totalSupply()/1e18;
-     uint256 buyPrice = calculatePurchaseReturn(_amount/1e18, tokenSupply);
+     uint256 buyPrice = calculatePurchaseReturn(tokenSupply, _amount/1e18);
      buyPrice = buyPrice * 1e18;
 
      require(reserveToken.allowance(msg.sender, address(this)) >= buyPrice, "SmartToken: transfer amount exceeds allowance");
