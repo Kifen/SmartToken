@@ -14,7 +14,7 @@ Clone and install dependencies
 `$ git clone git@github.com:Kifen/SmartToken.git`
 `$ cd SmartToken && npm i`
 
-Run Dapp
+Run Dapp - ensure Metamask is installed. Dapp supports only Metamask.
 
 `$ npm start`
 
