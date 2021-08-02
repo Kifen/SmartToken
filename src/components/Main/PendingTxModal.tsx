@@ -21,7 +21,7 @@ const PendingTxModal: React.FC<PendingTxModalProps> = ({
       }, 10000)
     }
     closeModal()
-  }, [show])
+  }, [show, setTxShow])
 
   return (
     <div>

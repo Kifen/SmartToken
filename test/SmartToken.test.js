@@ -19,7 +19,7 @@ describe('SmartToken', () => {
 
   const buy = async (buyer, amount) => {
     let totalSupply = (await smartToken.totalSupply()).div(decimals)
-    const buyPrice = await smartToken.getBuyPrice(
+    const buyPrice = await smartToken.calculatePurchaseReturn(
       amount.div(decimals),
       totalSupply,
     )
@@ -36,9 +36,9 @@ describe('SmartToken', () => {
 
   const sell = async (seller, amount) => {
     let totalSupply = (await smartToken.totalSupply()).div(decimals)
-    const sellPrice = await smartToken.getSellPrice(
-      amount.div(decimals),
+    const sellPrice = await smartToken.calculateSalesReturn(
       totalSupply,
+      amount.div(decimals),
     )
     await smartToken.connect(seller).sell(amount)
     return sellPrice
@@ -60,7 +60,10 @@ describe('SmartToken', () => {
   it('should get correct buy price', async () => {
     const totalSupply = await smartToken.totalSupply()
     const amount = 1
-    const buyPrice = await smartToken.getBuyPrice(amount, totalSupply)
+    const buyPrice = await smartToken.calculatePurchaseReturn(
+      amount,
+      totalSupply,
+    )
     const expectedBuyPrice = getBuyPrice(parseInt(totalSupply), amount)
 
     expect(buyPrice).to.equal(expectedBuyPrice)
@@ -71,7 +74,7 @@ describe('SmartToken', () => {
     await smartToken.mint(bob.address, sellAmount)
 
     let totalSupply = (await smartToken.totalSupply()).div(decimals)
-    const sellPrice = await smartToken.getSellPrice(
+    const sellPrice = await smartToken.calculateSalesReturn(
       sellAmount.div(decimals),
       totalSupply,
     )
@@ -121,8 +124,8 @@ describe('SmartToken', () => {
     // sell smart tokens
     let sellPrice = await sell(user1, sellAmount)
     sellPrice = sellPrice.mul(decimals)
-    expect(await smartToken.totalSupply()).to.equal(totalSupply.sub(sellAmount))
 
+    expect(await smartToken.totalSupply()).to.equal(totalSupply.sub(sellAmount))
     expect(await mockReserveToken.balanceOf(smartToken.address)).to.equal(
       mockReserveTokenBalance.sub(sellPrice),
     )
