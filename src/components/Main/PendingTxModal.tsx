@@ -17,7 +17,7 @@ const PendingTxModal: React.FC<PendingTxModalProps> = ({
   const closeModal = () => {
     setTimeout(() => {
       setTxShow(false)
-    }, 5000)
+    }, 10000)
   }
 
   useEffect(() => {

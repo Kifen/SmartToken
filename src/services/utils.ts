@@ -96,14 +96,6 @@ export const userCanBuy = async (
   const buyPrice = await getBuyPrice(user, amount)
   const realBuyPrice = parseInt(buyPrice.toString(), 10)
 
-  console.log(
-    'VIEW: ',
-    daiBal.div(decimals).toString(),
-    buyPrice.toString(),
-    parseInt(daiBal.div(decimals).toString(), 10) <
-      parseInt(buyPrice.toString(), 10),
-  )
-
   if (realDailBal < realBuyPrice) {
     setMessage(`Your DAI balance is insufficient for this order.`)
     return false
@@ -132,17 +124,13 @@ export const initateBuy = async (
   const bnAmount = BigNumber.from(amount).mul(decimals)
   const canBuy = await userCanBuy(user, bnAmount, setMessage)
   if (canBuy) {
-    // const price = await getBuyPrice(user, bnAmount)
     hash = await buy(user, bnAmount)
   }
 
   return hash
 }
 
-// export const
-
 export const approve = async (user: User, amount: BigNumber) => {
-  console.log('APPROVE CALLED...')
   const network: any = getNetwork(user.chainId)
 
   const dai = daiContract(user)
@@ -160,13 +148,16 @@ export const initiateSell = async (
   let balance = await contract.balanceOf(user.account)
   balance = parseInt(balance.div(decimals).toString(), 10)
 
-  const sellAmount = amount.toString()
-
-  if (balance < sellAmount) {
+  console.log(
+    balance < parseInt(amount.toString(), 10),
+    balance,
+    parseInt(amount.toString(), 10),
+  )
+  if (balance < parseInt(amount.toString(), 10)) {
     setMessage(`Your TOK balance is insufficient for this order.`)
     return false
   }
-
-  const tx = await contract.sell(amount)
+  const sellAmount = BigNumber.from(amount).mul(decimals)
+  const tx = await contract.sell(sellAmount)
   return tx.hash
 }
