@@ -18,25 +18,9 @@ import "@openzeppelin/contracts/access/Ownable.sol";
      reserveToken = _token;
    }
 
-  /* 
-  * @dev returns the price to purchase `_amount` tokens
-  * @param    _amount   number of tokens
-  */
-   function getBuyPrice(uint256 _amount, uint256 _tokenSupply) public view returns (uint256) {
-     return calculatePurchaseReturn(_tokenSupply, _amount);
-   }
-
- /* 
-  * @dev returns the price to sell `_amount` tokens
-  * @param    _amount   number of tokens
-  */
-   function getSellPrice(uint256 _amount, uint256 _tokenSupply) public view returns (uint256) {
-     return calculateSalesReturn(_tokenSupply, _amount);
-   }
-
    function buy(uint256 _amount) external {
      uint256 tokenSupply = totalSupply()/1e18;
-     uint256 buyPrice = getBuyPrice(_amount/1e18, tokenSupply);
+     uint256 buyPrice = calculatePurchaseReturn(tokenSupply, _amount/1e18);
      buyPrice = buyPrice * 1e18;
 
      require(reserveToken.allowance(msg.sender, address(this)) >= buyPrice, "SmartToken: transfer amount exceeds allowance");
@@ -49,7 +33,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
    function sell(uint256 _amount) external {
       require(_amount > 0, "SmartToken: invalid sell amount");
       uint256 tokenSupply = totalSupply()/1e18;
-      uint256 sellPrice = getSellPrice(_amount/1e18, tokenSupply);
+      uint256 sellPrice = calculateSalesReturn(tokenSupply, _amount/1e18);
       sellPrice = sellPrice * 1e18;
 
       _burn(msg.sender, _amount);

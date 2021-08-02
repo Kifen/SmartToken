@@ -74,7 +74,7 @@ export const getBuyPrice = async (
   supply: BigNumber,
 ): Promise<number> => {
   const contract = SmartTokenContract(user)
-  const buyPrice = await contract.getBuyPrice(amount, supply)
+  const buyPrice = await contract.calculatePurchaseReturn(supply, amount)
   return buyPrice
 }
 

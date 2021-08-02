@@ -109,11 +109,11 @@ const Main = () => {
         <div className="balance-div mb-4">
           <div className="bln">
             <span className="bal-name">DAI Balance</span>
-            <span>{`${daiBalance} DAI`}</span>
+            <span className="baln">{`${daiBalance} DAI`}</span>
           </div>
           <div className="bln">
             <span className="bal-name">TOK Balance</span>
-            <span>{`${tokBalance} TOK`}</span>
+            <span className="baln">{`${tokBalance} TOK`}</span>
           </div>
         </div>
         {message && (
