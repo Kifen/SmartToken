@@ -91,6 +91,23 @@ describe('SmartToken', () => {
         'SmartToken: transfer amount exceeds allowance',
       )
     })
+
+    it('should fail to buy if buyer has insufficient TOK', async () => {
+      const buyer = bob
+
+      const totalSupply = await smartToken.totalSupply()
+      const buyPrice = await smartToken.calculatePurchaseReturn(
+        totalSupply.div(decimals),
+        buyAmount.div(decimals),
+      )
+      await mockReserveToken
+        .connect(buyer)
+        .approve(smartToken.address, buyPrice.mul(decimals))
+
+      await expect(smartToken.connect(buyer).buy(buyAmount)).to.be.revertedWith(
+        'ERC20: transfer amount exceeds balance',
+      )
+    })
   })
 
   describe('Sell', () => {
