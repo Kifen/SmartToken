@@ -132,7 +132,6 @@ export const initateBuy = async (
   setMessage: (arg0: string) => void,
 ) => {
   let hash
-  console.log('BUYING: ', amount.toString())
   const canBuy = await userCanBuy(user, amount, setMessage)
   if (canBuy) {
     const price = await getBuyPrice(user, amount)

@@ -8,11 +8,14 @@ describe('SmartToken', () => {
   const name = 'SmartToken'
   const symbol = 'TOK'
   const maxSupply = 1000000
-  const buyAmount = 25
-  let sellAmount = 25
+
   let decimals = ethers.BigNumber.from(18)
   decimals = ethers.BigNumber.from(10).pow(decimals)
+
   const mintMount = ethers.BigNumber.from(2000).mul(decimals)
+
+  const buyAmount = ethers.BigNumber.from(25).mul(decimals)
+  let sellAmount = ethers.BigNumber.from(15).mul(decimals)
 
   const buy = async (buyer, amount) => {
     const buyPrice = await smartToken.getBuyPrice(amount)
@@ -68,9 +71,11 @@ describe('SmartToken', () => {
     await smartToken.mint(bob.address, tokens)
 
     const totalSupply = tokens
-    const amount = 17
-    const sellPrice = await smartToken.getSellPrice(amount)
-    const expectedSellPrice = getSellPrice(parseInt(totalSupply), amount)
+    const sellPrice = await smartToken.getSellPrice(sellAmount)
+    const expectedSellPrice = getSellPrice(
+      parseInt(totalSupply),
+      parseInt(sellAmount.div(decimals).toString()),
+    )
     expect(sellPrice).to.equal(expectedSellPrice)
   })
 
@@ -91,7 +96,6 @@ describe('SmartToken', () => {
   it('should sell TOK for reserve token', async () => {
     const user1 = bob
     const user2 = tunji
-    sellAmount = 15
 
     await mockReserveToken.mint(user1.address, mintMount)
     await mockReserveToken.mint(user2.address, mintMount)
@@ -108,15 +112,19 @@ describe('SmartToken', () => {
       smartToken.address,
     )
     expect(mockReserveTokenBalance).to.equal(buyPrice1.add(buyPrice2))
-    expect(totalSupply).to.equal(buyAmount * 2)
+    expect(totalSupply).to.equal(buyAmount.div(decimals) * 2)
 
     let sellPrice = await sell(user1, sellAmount)
     sellPrice = sellPrice.mul(decimals)
 
-    expect(await smartToken.totalSupply()).to.equal(totalSupply - sellAmount)
+    expect(await smartToken.totalSupply()).to.equal(
+      totalSupply - sellAmount.div(decimals),
+    )
     expect(await mockReserveToken.balanceOf(smartToken.address)).to.equal(
       mockReserveTokenBalance.sub(sellPrice),
     )
-    expect(await smartToken.totalSupply()).to.equal(totalSupply - sellAmount)
+    expect(await smartToken.totalSupply()).to.equal(
+      totalSupply - sellAmount.div(decimals),
+    )
   })
 })
