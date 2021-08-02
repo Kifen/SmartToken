@@ -16,6 +16,7 @@
     "ethers": "^5.4.3",
     "lodash.debounce": "^4.0.8",
     "nstall": "^0.2.0",
+    "openzeppelin-test-helpers": "^0.5.1",
     "react": "^17.0.1",
     "react-bootstrap": "^1.6.1",
     "react-dom": "^17.0.1",
