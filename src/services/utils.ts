@@ -5,6 +5,8 @@ import { SMART_TOKEN_ADDRESSES, DAI_ADDRESSES } from './constants'
 import { User } from './types'
 
 const options = { gasLimit: 286750 }
+let decimals = BigNumber.from(18)
+decimals = BigNumber.from(10).pow(decimals)
 
 export const getNetwork = (chainId?: number): string => {
   let network: string
@@ -89,19 +91,21 @@ export const userCanBuy = async (
     SMART_TOKEN_ADDRESSES[network],
   )
   const daiBal = await getDAIBalance(user)
-
-  if (daiBal < amount) {
+  const buyPrice = await getBuyPrice(user, amount)
+  console.log(
+    'PR: ',
+    allowance.div(decimals).toString(),
+    daiBal.div(decimals).toString(),
+    BigNumber.from(buyPrice).toString(),
+  )
+  console.log('TO:', (await contract.totalSupply()).toString())
+  if (daiBal.div(decimals) < BigNumber.from(buyPrice)) {
     setMessage(`Your DAI balance is insufficient for this order.`)
     return false
   }
 
-  if (allowance < amount) {
-    setMessage(
-      `Set allowance for ${await getBuyPrice(
-        user,
-        amount,
-      )} DAI to continue order.`,
-    )
+  if (allowance.div(decimals) < buyPrice) {
+    setMessage(`Set allowance for ${buyPrice} DAI to continue order.`)
     return false
   }
 
@@ -122,12 +126,18 @@ export const initateBuy = async (
   amount: BigNumber,
   setMessage: (arg0: string) => void,
 ) => {
+  let hash
+  console.log('BUYING: ', amount.toString())
   const canBuy = await userCanBuy(user, amount, setMessage)
   if (canBuy) {
     const price = await getBuyPrice(user, amount)
-    await buy(user, amount)
+    hash = await buy(user, amount)
   }
+
+  return hash
 }
+
+// export const
 
 export const approve = async (user: User, amount: BigNumber) => {
   console.log('APPROVE CALLED...')

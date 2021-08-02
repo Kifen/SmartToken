@@ -1,9 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react'
-import debounce from 'lodash.debounce'
+import React, { useEffect, useState } from 'react'
 import { Form, InputGroup, Button } from 'react-bootstrap'
 import { BigNumber } from 'ethers'
 import { useWeb3React } from '@web3-react/core'
-import { Web3Provider } from '@ethersproject/providers'
 import { MetaMask } from '../../connectors'
 import './main.css'
 import PendingTxModal from './PendingTxModal'
@@ -13,16 +11,9 @@ import { User } from '../../services/types'
 import {
   getTOKBalance,
   getDAIBalance,
-  getBuyPrice,
   initateBuy,
   approve,
 } from '../../services/utils'
-
-interface MainProps {
-  account: string
-  chainId: number
-  library: any
-}
 
 const getUser = (chainId?: number, account?: any, library?: any): User => {
   const user = {
@@ -78,13 +69,21 @@ const Main = () => {
     }
   }, [active, activate, library, account, chainId])
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault()
     if (!value) return
 
     if (buy) {
-      const buyAmount = BigNumber.from(value).mul(decimals)
-      initateBuy(getUser(chainId, account, library), buyAmount, setMessage)
+      const buyAmount = BigNumber.from(value)
+      const hash = await initateBuy(
+        getUser(chainId, account, library),
+        buyAmount,
+        setMessage,
+      )
+      if (hash) {
+        setPendingHash(hash)
+        setTxShow(true)
+      }
     }
   }
 

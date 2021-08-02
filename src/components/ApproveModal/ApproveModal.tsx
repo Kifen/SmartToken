@@ -28,6 +28,9 @@ const Index: React.FC<IndexProps> = ({
   setPendingHash,
 }: IndexProps) => {
   const [value, setValue] = useState<any | null>(null)
+  let decimals = BigNumber.from(18)
+  decimals = BigNumber.from(10).pow(decimals)
+
   const handleApprove = async (e: any) => {
     e.preventDefault()
     console.log(value)
@@ -35,7 +38,10 @@ const Index: React.FC<IndexProps> = ({
     if (value === 0) {
       return
     }
-    const tx = await approve(user, BigNumber.from(parseInt(value, 10)))
+    const tx = await approve(
+      user,
+      BigNumber.from(parseInt(value, 10)).mul(decimals),
+    )
     console.log('tx', tx)
 
     setPendingHash(tx)

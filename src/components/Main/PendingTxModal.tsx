@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
-import { Button, Modal, Spinner } from 'react-bootstrap'
+import { Modal, Spinner } from 'react-bootstrap'
 
 interface PendingTxModalProps {
   show: boolean
   onHide: () => void
-  hash: string | any
+  hash: string | null
   setTxShow: (arg0: boolean) => void
 }
 
