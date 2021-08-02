@@ -2,13 +2,7 @@ import React, { useState } from 'react'
 import { BigNumber } from 'ethers'
 import { Modal, Form, InputGroup, Button } from 'react-bootstrap'
 import { User } from '../../services/types'
-import {
-  getTOKBalance,
-  getDAIBalance,
-  getBuyPrice,
-  initateBuy,
-  approve,
-} from '../../services/utils'
+import { approve } from '../../services/utils'
 
 interface IndexProps {
   show: boolean
@@ -16,7 +10,7 @@ interface IndexProps {
   user: User
   setShow: (arg0: boolean) => void
   setTxShow: (arg0: boolean) => void
-  setPendingHash: (arg0: string | any) => void
+  setPendingHash: (arg0: string | undefined) => void
 }
 
 const Index: React.FC<IndexProps> = ({
@@ -31,9 +25,8 @@ const Index: React.FC<IndexProps> = ({
   let decimals = BigNumber.from(18)
   decimals = BigNumber.from(10).pow(decimals)
 
-  const handleApprove = async (e: any) => {
+  const handleApprove = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log(value)
 
     if (value === 0) {
       return
@@ -42,8 +35,6 @@ const Index: React.FC<IndexProps> = ({
       user,
       BigNumber.from(parseInt(value, 10)).mul(decimals),
     )
-    console.log('tx', tx)
-
     setPendingHash(tx)
     setShow(false)
     setTxShow(true)
@@ -52,12 +43,13 @@ const Index: React.FC<IndexProps> = ({
   return (
     <Modal show={show} onHide={onHide}>
       <Modal.Header>
-        <Modal.Title>Approve</Modal.Title>
+        <Modal.Title style={{ margin: 'auto' }}>Approve</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form onSubmit={handleApprove}>
           <InputGroup>
             <Form.Control
+              required
               value={value}
               onChange={(e) => setValue(e.target.value)}
               type="number"

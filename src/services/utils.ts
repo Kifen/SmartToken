@@ -83,7 +83,6 @@ export const userCanBuy = async (
   setMessage: (arg0: string) => void,
 ): Promise<boolean> => {
   const dai = daiContract(user)
-  const contract = SmartTokenContract(user)
 
   const network: any = getNetwork(user.chainId)
   const allowance = await dai.allowance(
@@ -135,7 +134,6 @@ export const approve = async (user: User, amount: BigNumber) => {
 
   const dai = daiContract(user)
   const tx = await dai.approve(SMART_TOKEN_ADDRESSES[network], amount, options)
-  console.log('TX: ', tx)
   return tx.hash
 }
 
@@ -148,11 +146,6 @@ export const initiateSell = async (
   let balance = await contract.balanceOf(user.account)
   balance = parseInt(balance.div(decimals).toString(), 10)
 
-  console.log(
-    balance < parseInt(amount.toString(), 10),
-    balance,
-    parseInt(amount.toString(), 10),
-  )
   if (balance < parseInt(amount.toString(), 10)) {
     setMessage(`Your TOK balance is insufficient for this order.`)
     return false

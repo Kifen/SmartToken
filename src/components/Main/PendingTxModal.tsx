@@ -14,15 +14,14 @@ const PendingTxModal: React.FC<PendingTxModalProps> = ({
   hash,
   setTxShow,
 }: PendingTxModalProps) => {
-  const closeModal = () => {
-    setTimeout(() => {
-      setTxShow(false)
-    }, 10000)
-  }
-
   useEffect(() => {
+    const closeModal = () => {
+      setTimeout(() => {
+        setTxShow(false)
+      }, 10000)
+    }
     closeModal()
-  })
+  }, [show])
 
   return (
     <div>

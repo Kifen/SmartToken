@@ -13,7 +13,6 @@ import {
   getDAIBalance,
   initateBuy,
   initiateSell,
-  approve,
 } from '../../services/utils'
 
 const getUser = (chainId?: number, account?: any, library?: any): User => {
@@ -26,21 +25,16 @@ const getUser = (chainId?: number, account?: any, library?: any): User => {
 }
 
 const Main = () => {
-  const { active, activate, library, account, error, chainId } = useWeb3React()
+  const { active, activate, library, account, chainId } = useWeb3React()
   let decimals = BigNumber.from(18)
   decimals = BigNumber.from(10).pow(decimals)
 
   const [value, setValue] = useState<any | null>(null)
-  const [rAccount, setAccount] = useState<any>(null)
-  const [rChainId, setChainId] = useState<any>(null)
-  const [rLibrary, setLibrary] = useState<any>(null)
   const [buy, setBuy] = useState<boolean>(true)
   const [sell, setSell] = useState<boolean>(false)
   const [message, setMessage] = useState<string>('')
   const [daiBalance, setDaiBalance] = useState<string>('')
   const [tokBalance, setTokBalance] = useState<string>('')
-  const [buyPrice, setBuyPrice] = useState<number>(1)
-  const [user, setUser] = useState<any | null>(null)
   const [show, setShow] = useState<boolean>(false)
   const [txShow, setTxShow] = useState<boolean>(false)
   const [pendingHash, setPendingHash] = useState<string | any>('')
@@ -48,7 +42,6 @@ const Main = () => {
   useEffect(() => {
     async function getBalances() {
       let dai = await getDAIBalance(getUser(chainId, account, library))
-      console.log(dai.toString(), decimals.toString())
       dai = dai.div(decimals)
       const daiBal = dai.toString()
 
@@ -62,15 +55,11 @@ const Main = () => {
 
     if (active) {
       activate(MetaMask)
-      setAccount(account)
-      setChainId(chainId)
-      setLibrary(library)
-      setUser(getUser(chainId, account, library))
       getBalances()
     }
-  }, [active, activate, library, account, chainId])
+  }, [active, activate, library, account, chainId, decimals])
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!value) return
 
@@ -98,16 +87,6 @@ const Main = () => {
         setTxShow(true)
       }
     }
-  }
-
-  const handleApprove = (e: any) => {
-    e.preventDefault()
-    if (!e.target.value) return
-
-    const approveAmount = BigNumber.from(parseInt(e.target.value, 10)).mul(
-      decimals,
-    )
-    approve(getUser(chainId, account, library), approveAmount)
   }
 
   return (
@@ -180,6 +159,7 @@ const Main = () => {
               <InputGroup>
                 <Form.Control
                   type="number"
+                  required
                   placeholder="0"
                   value={value}
                   onChange={(e) => setValue(parseInt(e.target.value, 10))}

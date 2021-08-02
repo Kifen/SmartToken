@@ -3,7 +3,7 @@ import './header.css'
 
 interface HeaderProps {
   network: string
-  account: any
+  account: undefined | string | null
 }
 
 const Header: React.FC<HeaderProps> = ({ network, account }: HeaderProps) => {
@@ -13,8 +13,8 @@ const Header: React.FC<HeaderProps> = ({ network, account }: HeaderProps) => {
         <h3>SmartToken</h3>
       </div>
       <div className="info-box">
-        <span id="network">{network}</span>
-        <span id="address">{account}</span>
+        <span id="network">{network || 'Network'}</span>
+        <span id="address">{account || 'Account'}</span>
       </div>
     </header>
   )

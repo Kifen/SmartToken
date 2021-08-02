@@ -1,13 +1,12 @@
 import { useEffect } from 'react'
-import { Web3ReactProvider, useWeb3React } from '@web3-react/core'
-import { Web3Provider } from '@ethersproject/providers'
+import { useWeb3React } from '@web3-react/core'
 import { MetaMask } from './connectors'
 import Header from './components/Header/Header'
 import Main from './components/Main/Main'
 import { getNetwork } from './services/utils'
 
 function App() {
-  const { active, activate, library, account, error, chainId } = useWeb3React()
+  const { active, activate, library, account, chainId } = useWeb3React()
   useEffect(() => {
     if (!active) {
       activate(MetaMask)

@@ -9,7 +9,7 @@
     "project": "./tsconfig.json"
   },
   "extends": [
-    "airbnb-typescript", 
+    "airbnb-typescript",
     "airbnb/hooks",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
@@ -25,6 +25,7 @@
     "jest": true
   },
   "rules": {
+    "@typescript-eslint/no-explicit-any": "off",
     "react/react-in-jsx-scope": "off",
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",
@@ -34,7 +35,7 @@
         "extensions": [".tsx"]
       }
     ],
-    "import/extensions": ["error", "never", {"json": "always"}],
+    "import/extensions": ["error", "never", { "json": "always" }],
     "import/prefer-default-export": "off",
     "prettier/prettier": [
       "error",
