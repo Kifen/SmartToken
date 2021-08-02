@@ -163,5 +163,12 @@ describe('SmartToken', () => {
         totalSupply.sub(sellAmount),
       )
     })
+
+    it('should fail if sell amount is zero', async () => {
+      const seller = bob
+      await expect(smartToken.connect(seller).sell(0)).to.be.revertedWith(
+        'SmartToken: invalid sell amount',
+      )
+    })
   })
 })
