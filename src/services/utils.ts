@@ -136,5 +136,6 @@ export const approve = async (user: User, amount: BigNumber) => {
   const dai = daiContract(user)
   const tx = await dai.approve(SMART_TOKEN_ADDRESSES[network], amount, options)
   console.log('TX: ', tx)
+  return tx.hash
 }
 // export const userCanSell = async (user: User, amount: number) => {}

@@ -50,7 +50,8 @@ const Main = () => {
   const [buyPrice, setBuyPrice] = useState<number>(1)
   const [user, setUser] = useState<any | null>(null)
   const [show, setShow] = useState<boolean>(false)
-  const [appShow, setAppShow] = useState<boolean>(false)
+  const [txShow, setTxShow] = useState<boolean>(false)
+  const [pendingHash, setPendingHash] = useState<string | any>('')
 
   useEffect(() => {
     async function getBalances() {
@@ -104,8 +105,15 @@ const Main = () => {
         show={show}
         onHide={() => setShow(false)}
         setShow={setShow}
+        setPendingHash={setPendingHash}
+        setTxShow={setTxShow}
       />
-      <PendingTxModal />
+      <PendingTxModal
+        show={txShow}
+        onHide={() => setTxShow(false)}
+        hash={pendingHash}
+        setTxShow={setTxShow}
+      />
       <div className="main">
         <div className="balance-div mb-4">
           <div className="bln">

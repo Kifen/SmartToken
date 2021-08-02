@@ -15,6 +15,8 @@ interface IndexProps {
   onHide: () => void
   user: User
   setShow: (arg0: boolean) => void
+  setTxShow: (arg0: boolean) => void
+  setPendingHash: (arg0: string | any) => void
 }
 
 const Index: React.FC<IndexProps> = ({
@@ -22,18 +24,23 @@ const Index: React.FC<IndexProps> = ({
   onHide,
   user,
   setShow,
+  setTxShow,
+  setPendingHash,
 }: IndexProps) => {
   const [value, setValue] = useState<any | null>(null)
-  const handleApprove = (e: any) => {
+  const handleApprove = async (e: any) => {
     e.preventDefault()
     console.log(value)
 
     if (value === 0) {
       return
     }
-    console.log('hello2')
-    approve(user, BigNumber.from(parseInt(value, 10)))
+    const tx = await approve(user, BigNumber.from(parseInt(value, 10)))
+    console.log('tx', tx)
+
+    setPendingHash(tx)
     setShow(false)
+    setTxShow(true)
   }
 
   return (

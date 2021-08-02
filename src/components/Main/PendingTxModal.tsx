@@ -1,10 +1,32 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Button, Modal, Spinner } from 'react-bootstrap'
 
-const PendingTxModal = () => {
+interface PendingTxModalProps {
+  show: boolean
+  onHide: () => void
+  hash: string | any
+  setTxShow: (arg0: boolean) => void
+}
+
+const PendingTxModal: React.FC<PendingTxModalProps> = ({
+  show,
+  onHide,
+  hash,
+  setTxShow,
+}: PendingTxModalProps) => {
+  const closeModal = () => {
+    setTimeout(() => {
+      setTxShow(false)
+    }, 5000)
+  }
+
+  useEffect(() => {
+    closeModal()
+  })
+
   return (
     <div>
-      <Modal>
+      <Modal show={show} onHide={onHide} centered>
         <Modal.Header>
           <Modal.Title style={{ margin: 'auto' }}>
             Transaction Pending
@@ -21,8 +43,9 @@ const PendingTxModal = () => {
 
         <Modal.Footer>
           <a
-            href="/#"
+            href={`https://rinkeby.etherscan.io/tx/${hash}`}
             target="_blank"
+            rel="noreferrer"
             className="view-tx"
             style={{ margin: 'auto' }}
           >
