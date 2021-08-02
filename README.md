@@ -14,6 +14,18 @@ Clone and install dependencies
 `$ git clone git@github.com:Kifen/SmartToken.git`
 `$ cd SmartToken && npm i`
 
+Create file `.env.development.local` in project root and 
+
+```
+RINKEBY_URL=
+PK=
+RESERVE_TOKEN=0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea
+```
+
+Run tests
+
+`$ npx hardhat test`
+
 Run Dapp - ensure Metamask is installed. Dapp supports only Metamask.
 
 `$ npm start`
