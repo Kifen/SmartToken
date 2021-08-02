@@ -75,7 +75,6 @@ export const getBuyPrice = async (
 ): Promise<number> => {
   const contract = SmartTokenContract(user)
   const buyPrice = await contract.calculatePurchaseReturn(supply, amount)
-  console.log('PRICE: ', buyPrice.toString())
   return buyPrice
 }
 
@@ -95,7 +94,6 @@ export const userCanBuy = async (
   const realDailBal = parseInt(daiBal.div(decimals).toString(), 10)
 
   const buyPrice = await getBuyPrice(user, amount, totalSupply)
-  console.log('GOT: ', buyPrice.toString())
   const realBuyPrice = parseInt(buyPrice.toString(), 10)
 
   if (realDailBal < realBuyPrice) {
