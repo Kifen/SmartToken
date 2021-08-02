@@ -18,7 +18,11 @@ describe('SmartToken', () => {
   let sellAmount = ethers.BigNumber.from(15).mul(decimals)
 
   const buy = async (buyer, amount) => {
-    const buyPrice = await smartToken.getBuyPrice(amount)
+    let totalSupply = (await smartToken.totalSupply()).div(decimals)
+    const buyPrice = await smartToken.getBuyPrice(
+      amount.div(decimals),
+      totalSupply,
+    )
     // approve SmartToken to transfer from bob's account
     await mockReserveToken
       .connect(buyer)
@@ -31,7 +35,11 @@ describe('SmartToken', () => {
   }
 
   const sell = async (seller, amount) => {
-    const sellPrice = await smartToken.getSellPrice(amount)
+    let totalSupply = (await smartToken.totalSupply()).div(decimals)
+    const sellPrice = await smartToken.getSellPrice(
+      amount.div(decimals),
+      totalSupply,
+    )
     await smartToken.connect(seller).sell(amount)
     return sellPrice
   }
@@ -52,7 +60,7 @@ describe('SmartToken', () => {
   it('should get correct buy price', async () => {
     const totalSupply = await smartToken.totalSupply()
     const amount = 1
-    const buyPrice = await smartToken.getBuyPrice(amount)
+    const buyPrice = await smartToken.getBuyPrice(amount, totalSupply)
     const expectedBuyPrice = getBuyPrice(parseInt(totalSupply), amount)
 
     expect(buyPrice).to.equal(expectedBuyPrice)
@@ -63,9 +71,12 @@ describe('SmartToken', () => {
     await smartToken.mint(bob.address, sellAmount)
 
     let totalSupply = (await smartToken.totalSupply()).div(decimals)
-    totalSupply = parseInt(totalSupply.toString())
-    const sellPrice = await smartToken.getSellPrice(sellAmount)
+    const sellPrice = await smartToken.getSellPrice(
+      sellAmount.div(decimals),
+      totalSupply,
+    )
 
+    totalSupply = parseInt(totalSupply.toString())
     const expectedSellPrice = getSellPrice(
       totalSupply,
       parseInt(sellAmount.div(decimals).toString()),
