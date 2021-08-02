@@ -49,7 +49,7 @@ describe('SmartToken', () => {
 
   it('should get correct buy price', async () => {
     const totalSupply = await smartToken.totalSupply()
-    const amount = 3
+    const amount = 1
     const buyPrice = await smartToken.getBuyPrice(amount)
     console.log(buyPrice.toString(), totalSupply.toString())
     const expectedBuyPrice = getBuyPrice(parseInt(totalSupply), amount)

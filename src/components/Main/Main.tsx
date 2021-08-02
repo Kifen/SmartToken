@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import debounce from 'lodash.debounce'
 import { Form, InputGroup, Button } from 'react-bootstrap'
+import { BigNumber } from 'ethers'
 import { useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 import { MetaMask } from '../../connectors'
@@ -9,7 +10,13 @@ import PendingTxModal from './PendingTxModal'
 import Message from '../Message/Message'
 import ApproveModal from '../ApproveModal/ApproveModal'
 import { User } from '../../services/types'
-import { getTOKBalance, getDAIBalance, getBuyPrice } from '../../services/utils'
+import {
+  getTOKBalance,
+  getDAIBalance,
+  getBuyPrice,
+  initateBuy,
+  approve,
+} from '../../services/utils'
 
 interface MainProps {
   account: string
@@ -28,8 +35,10 @@ const getUser = (chainId?: number, account?: any, library?: any): User => {
 
 const Main = () => {
   const { active, activate, library, account, error, chainId } = useWeb3React()
+  let decimals = BigNumber.from(18)
+  decimals = BigNumber.from(10).pow(decimals)
 
-  const [value, setValue] = useState<any>(null)
+  const [value, setValue] = useState<any | null>(null)
   const [rAccount, setAccount] = useState<any>(null)
   const [rChainId, setChainId] = useState<any>(null)
   const [rLibrary, setLibrary] = useState<any>(null)
@@ -41,14 +50,21 @@ const Main = () => {
   const [buyPrice, setBuyPrice] = useState<number>(1)
   const [user, setUser] = useState<any | null>(null)
   const [show, setShow] = useState<boolean>(false)
+  const [appShow, setAppShow] = useState<boolean>(false)
 
   useEffect(() => {
     async function getBalances() {
-      const dai = await getDAIBalance(getUser(chainId, account, library))
-      const tok = await getTOKBalance(getUser(chainId, account, library))
-      console.log('ME_11: ', active, rChainId, rAccount, rLibrary)
-      setDaiBalance((dai / 10 ** 18).toString())
-      setTokBalance((tok / 10 ** 18).toString())
+      let dai = await getDAIBalance(getUser(chainId, account, library))
+      console.log(dai.toString(), decimals.toString())
+      dai = dai.div(decimals)
+      const daiBal = dai.toString()
+
+      let tok = await getTOKBalance(getUser(chainId, account, library))
+      tok = tok.div(decimals)
+      const tokBal = tok.toString()
+
+      setDaiBalance(daiBal)
+      setTokBalance(tokBal)
     }
 
     if (active) {
@@ -58,21 +74,37 @@ const Main = () => {
       setLibrary(library)
       setUser(getUser(chainId, account, library))
       getBalances()
-      console.log('ME_1: ', active, rChainId, rAccount, rLibrary)
     }
   }, [active, activate, library, account, chainId])
 
-  const debounced = useRef(
-    debounce((nextValue) => {
-      setValue(nextValue)
-      console.log('ME: ', rChainId, rAccount, rLibrary)
-      getBuyPrice(getUser(chainId, account, library), parseInt(nextValue, 10))
-    }, 1000),
-  ).current
+  const handleSubmit = (e: any) => {
+    e.preventDefault()
+    if (!value) return
+
+    if (buy) {
+      const buyAmount = BigNumber.from(value).mul(decimals)
+      initateBuy(getUser(chainId, account, library), buyAmount, setMessage)
+    }
+  }
+
+  const handleApprove = (e: any) => {
+    e.preventDefault()
+    if (!e.target.value) return
+
+    const approveAmount = BigNumber.from(parseInt(e.target.value, 10)).mul(
+      decimals,
+    )
+    approve(getUser(chainId, account, library), approveAmount)
+  }
 
   return (
     <div className="main-page">
-      <ApproveModal show={show} onHide={() => setShow(false)} />
+      <ApproveModal
+        user={getUser(chainId, account, library)}
+        show={show}
+        onHide={() => setShow(false)}
+        setShow={setShow}
+      />
       <PendingTxModal />
       <div className="main">
         <div className="balance-div mb-4">
@@ -121,32 +153,30 @@ const Main = () => {
             </Button>
           </div>
           <div className="top">
-            <span>input</span>
+            <span>Input</span>
           </div>
           <div className="form">
-            <Form>
+            <Form onSubmit={handleSubmit}>
               <InputGroup>
                 <Form.Control
                   type="number"
                   placeholder="0"
                   value={value}
-                  onChange={(e) => {
-                    debounced(e.target.value)
-                  }}
+                  onChange={(e) => setValue(parseInt(e.target.value, 10))}
                 />
                 <InputGroup.Append>
                   <InputGroup.Text>TOK</InputGroup.Text>
                 </InputGroup.Append>
               </InputGroup>
-              {value && (
+              {/* {value && (
                 <div className="info-span">
                   <span className="text-muted">
                     {value} TOK = {buyPrice} DAI
                   </span>
                 </div>
-              )}
+              )} */}
               <div className="button">
-                <Button variant="dark" className="submit-btn">
+                <Button type="submit" variant="dark" className="submit-btn">
                   {buy ? 'Buy' : 'Sell'}
                 </Button>
               </div>
