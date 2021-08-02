@@ -39,6 +39,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
    function buy(uint256 _amount) external {
      uint256 buyPrice = getBuyPrice(_amount);
+     buyPrice = buyPrice * 1e18;
      require(reserveToken.allowance(msg.sender, address(this)) >= buyPrice, "SmartToken: transfer amount exceeds allowance");
 
      reserveToken.transferFrom(msg.sender, address(this), buyPrice);
@@ -49,6 +50,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
    function sell(uint256 _amount) external {
       require(_amount > 0, "SmartToken: invalid sell amount");
       uint256 sellPrice = getSellPrice(_amount);
+      sellPrice = sellPrice * 1e18;
       _burn(msg.sender, _amount);
       reserveToken.transfer(msg.sender, sellPrice);
 
