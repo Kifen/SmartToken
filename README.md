@@ -21,6 +21,9 @@ RINKEBY_URL= <Infura Rinkeby URL>
 PK=<Private Key>
 RESERVE_TOKEN=0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea
 ```
+Set environment to `development`.
+
+`$ export NODE_ENV=development`
 
 Run tests
 
