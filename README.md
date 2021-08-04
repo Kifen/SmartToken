@@ -29,7 +29,7 @@ Run tests
 
 `$ npx hardhat test`
 
-Run Dapp - ensure Metamask is installed. Dapp supports only Metamask.
+Run Dapp - ensure Metamask is installed. Dapp supports only Metamask, and runs on the Rinkeby network.
 
 `$ npm start`
 
